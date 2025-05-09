@@ -14,8 +14,7 @@ O backend é construído com Node.js e Express, e o banco de dados utilizado é 
 
 ## 2. Estrutura de Pastas e Arquivos
 
-A estrutura de pastas e arquivos sugerida para este projeto é a seguinte:
-
+```txt
 SEU-PROJETO/
 ├── .env                   # Variáveis de ambiente (não versionar)
 ├── .env.example           # Exemplo de arquivo de variáveis de ambiente
@@ -28,18 +27,19 @@ SEU-PROJETO/
 │   ├── controllers/       # Controladores (lógica de requisição/resposta)
 │   │   └── HomeController.js # Exemplo de controlador para a página inicial
 │   ├── migrations/        # Arquivos de migração do banco de dados
-│   │   └── 202405092230_usuarios.sql # Exemplo de arquivo de migração para a tabela de usuários
+│   │   └── 202405092230_usuarios.sql # Exemplo de migração para a tabela de usuários
 │   ├── models/            # Modelos de dados (representação das tabelas do banco)
-│   │   └── User.js        # Exemplo de modelo para a tabela de usuários
+│   │   └── User.js        # Modelo para a tabela de usuários
 │   ├── routes/            # Definições das rotas da API
-│   │   └── index.js       # Rota principal (ex: /)
+│   │   ├── index.js       # Rota principal (ex: /)
 │   │   └── users.js       # Rotas relacionadas a usuários (ex: /users)
 │   ├── services/          # Serviços ou lógica de negócio mais complexa
-│   │   └── userService.js # Exemplo de serviço para operações com usuários
+│   │   └── userService.js # Serviço para operações com usuários
 │   └── server.js          # Arquivo principal para iniciar o servidor Node.js
 ├── tests/                 # Testes automatizados
-│   └── example.test.js    # Exemplo de arquivo de teste
+│   └── example.test.js    # Exemplo de teste
 └── README.md              # Documentação principal do projeto
+```
 
 **Descrição dos principais componentes:**
 
