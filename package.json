@@ -12,10 +12,19 @@
   "version": "1.0.0",
   "main": "jest.config.js",
   "directories": {
+    "doc": "docs",
     "test": "tests"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "Este projeto implementa um sistema de Gerenciador de Tarefas básico. Ele permite que usuários cadastrem-se, criem tarefas, organizem-nas por categorias e acompanhem seu status (pendente, em andamento, concluída). O objetivo principal é demonstrar a integração de uma aplicação Node.js com um banco de dados PostgreSQL, utilizando um sistema de migrações para gerenciar a estrutura do banco de dados.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luizgustaoliv/seu-projeto.git"
+  },
+  "bugs": {
+    "url": "https://github.com/luizgustaoliv/seu-projeto/issues"
+  },
+  "homepage": "https://github.com/luizgustaoliv/seu-projeto#readme"
 }
