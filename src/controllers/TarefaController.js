@@ -1,7 +1,5 @@
-// controllers/TarefaController.js
-const pool = require('../config/database');
+const pool = require('../config/db');
 
-// Criar uma nova tarefa
 exports.criarTarefa = async (req, res) => {
   const { nome, descricao } = req.body;
 
@@ -17,7 +15,6 @@ exports.criarTarefa = async (req, res) => {
   }
 };
 
-// Listar todas as tarefas
 exports.listarTarefas = async (req, res) => {
   const query = 'SELECT * FROM tarefas';
 
@@ -29,7 +26,6 @@ exports.listarTarefas = async (req, res) => {
   }
 };
 
-// Editar uma tarefa
 exports.editarTarefa = async (req, res) => {
   const { id } = req.params;
   const { nome, descricao, status } = req.body;
@@ -50,7 +46,6 @@ exports.editarTarefa = async (req, res) => {
   }
 };
 
-// Excluir uma tarefa
 exports.excluirTarefa = async (req, res) => {
   const { id } = req.params;
 

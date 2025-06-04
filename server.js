@@ -1,19 +1,34 @@
 // server.js
+require('dotenv').config();
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
-const routes = require('./routes');
+const userRoutes = require('./src/routes/userRoutes');
+const taskRoutes = require('./src/routes/taskRoutes');
+const categoryRoutes = require('./src/routes/categoryRoutes');
 
 const app = express();
-const port = 3000;
 
 // Middlewares
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-// Usando as rotas definidas
-app.use('/api', routes);
+// Rotas
+app.use('/api/users', userRoutes);
+app.use('/api/tasks', taskRoutes);
+app.use('/api/categories', categoryRoutes);
 
-app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
+// Rota de teste
+app.get('/', (req, res) => {
+    res.json({ message: 'API de Gerenciamento de Tarefas' });
+});
+
+// Tratamento de erros
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
