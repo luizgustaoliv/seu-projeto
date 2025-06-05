@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Tarefas</title>
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .list {
+            list-style: none;
+            padding: 0;
+        }
+        .list-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .list-item h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .list-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .priority {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            color: white;
+        }
+        .priority.alta {
+            background-color: #dc3545;
+        }
+        .priority.media {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .priority.baixa {
+            background-color: #28a745;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: white;
+            background-color: #6c757d;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .actions {
+            margin-top: 10px;
+        }
+        .actions button {
+            padding: 5px 10px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .edit {
+            background-color: #007bff;
+            color: white;
+        }
+        .delete {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relatório de Tarefas</h1>
+
+    <div id="tasksList"></div>
+
+    <a href="/" class="button">Voltar</a>
+
+    <script>
+        async function loadTasks() {
+            try {
+                const response = await fetch('/api/tasks');
+                if (response.ok) {
+                    const tasks = await response.json();
+                    const tasksList = document.getElementById('tasksList');
+                    tasksList.innerHTML = '';
+
+                    tasks.forEach(task => {
+                        const taskElement = document.createElement('div');
+                        taskElement.className = 'list-item';
+                        
+                        const priorityClass = task.priority.toLowerCase();
+                        const formattedDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'Sem prazo';
+
+                        taskElement.innerHTML = `
+                            <h3>${task.title}</h3>
+                            <p><strong>Descrição:</strong> ${task.description || 'Sem descrição'}</p>
+                            <p><strong>Prazo:</strong> ${formattedDate}</p>
+                            <p><strong>Prioridade:</strong> <span class="priority ${priorityClass}">${task.priority}</span></p>
+                            <div class="actions">
+                                <button class="edit" onclick="editTask(${task.id})">Editar</button>
+                                <button class="delete" onclick="deleteTask(${task.id})">Excluir</button>
+                            </div>
+                        `;
+                        
+                        tasksList.appendChild(taskElement);
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao carregar tarefas:', error);
+                alert('Erro ao carregar tarefas');
+            }
+        }
+
+        async function deleteTask(id) {
+            if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
+                try {
+                    const response = await fetch(`/api/tasks/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        loadTasks(); // Recarrega a lista após excluir
+                    } else {
+                        alert('Erro ao excluir tarefa');
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    alert('Erro ao excluir tarefa');
+                }
+            }
+        }
+
+        function editTask(id) {
+            window.location.href = `/tasks/edit/${id}`;
+        }
+
+        // Carrega as tarefas quando a página é aberta
+        loadTasks();
+    </script>
+</body>
+</html>

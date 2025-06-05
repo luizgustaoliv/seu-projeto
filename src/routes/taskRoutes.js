@@ -8,4 +8,4 @@ router.get('/:id', TaskController.getById);
 router.put('/:id', TaskController.update);
 router.delete('/:id', TaskController.delete);
 
-module.exports = router; 
+module.exports = router;
