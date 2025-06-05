@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const TaskController = require('../controllers/TaskController');
-const auth = require('../middlewares/auth');
-
-// Todas as rotas de tarefas requerem autenticação
-router.use(auth);
 
 router.post('/', TaskController.create);
 router.get('/', TaskController.getAll);

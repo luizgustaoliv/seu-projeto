@@ -2,24 +2,26 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const userRoutes = require('./src/routes/userRoutes');
+const path = require('path');
 const taskRoutes = require('./src/routes/taskRoutes');
-const categoryRoutes = require('./src/routes/categoryRoutes');
 
 const app = express();
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'views')));
 
 // Rotas
-app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
-app.use('/api/categories', categoryRoutes);
 
-// Rota de teste
+// Rotas para páginas HTML
 app.get('/', (req, res) => {
-    res.json({ message: 'API de Gerenciamento de Tarefas' });
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
+
+app.get('/tasks/new', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'tasks', 'new.html'));
 });
 
 // Tratamento de erros
