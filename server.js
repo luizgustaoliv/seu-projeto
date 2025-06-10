@@ -7,6 +7,11 @@ const taskRoutes = require('./src/routes/taskRoutes');
 
 const app = express();
 
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'views')));
+
 // Rotas
 app.use('/api/tasks', taskRoutes);
 
@@ -17,6 +22,10 @@ app.get('/', (req, res) => {
 
 app.get('/tasks/new', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'tasks', 'new.html'));
+});
+
+app.get('/tasks/completed', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'tasks', 'completed.html'));
 });
 
 // Tratamento de erros

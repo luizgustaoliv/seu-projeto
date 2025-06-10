@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarefas Concluídas</title>
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+        .task-item {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .task-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .task-description {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        .task-meta {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .button.secondary {
+            background-color: #6c757d;
+        }
+        .no-tasks {
+            text-align: center;
+            color: #6c757d;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tarefas Concluídas</h1>
+    <div id="taskList" class="task-list">
+        <!-- As tarefas serão inseridas aqui via JavaScript -->
+    </div>
+    <div style="text-align: center;">
+        <a href="/" class="button">Voltar ao Início</a>
+    </div>
+
+    <script>
+        async function loadCompletedTasks() {
+            try {
+                const response = await fetch('/api/tasks/completed');
+                if (response.ok) {
+                    const tasks = await response.json();
+                    const taskList = document.getElementById('taskList');
+                    
+                    if (tasks.length === 0) {
+                        taskList.innerHTML = '<div class="no-tasks">Nenhuma tarefa concluída encontrada.</div>';
+                        return;
+                    }
+
+                    taskList.innerHTML = tasks.map(task => `
+                        <div class="task-item">
+                            <div class="task-title">${task.title}</div>
+                            <div class="task-description">${task.description || ''}</div>
+                            <div class="task-meta">
+                                <strong>Categoria:</strong> ${task.category?.name || 'Sem categoria'} |
+                                <strong>Concluída em:</strong> ${new Date(task.completedAt).toLocaleDateString()}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    throw new Error('Erro ao carregar tarefas');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('taskList').innerHTML = 
+                    '<div class="no-tasks">Erro ao carregar tarefas. Por favor, tente novamente.</div>';
+            }
+        }
+
+        // Carregar tarefas quando a página for carregada
+        document.addEventListener('DOMContentLoaded', loadCompletedTasks);
+    </script>
+</body>
+</html> 

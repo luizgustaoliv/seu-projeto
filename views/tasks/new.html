@@ -58,12 +58,6 @@
             <input type="date" id="dueDate" name="dueDate">
         </div>
         <div class="form-group">
-            <label for="category">Categoria</label>
-            <select id="category" name="categoryId">
-                <option value="">Selecione uma categoria</option>
-            </select>
-        </div>
-        <div class="form-group">
             <label for="priority">Prioridade</label>
             <select id="priority" name="priority">
                 <option value="baixa">Baixa</option>
@@ -76,16 +70,14 @@
     </form>
 
     <script>
-        // O JavaScript permanece o mesmo
         document.getElementById('taskForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const formData = {
-                title: document.getElementById('title').value,
-                description: document.getElementById('description').value,
-                dueDate: document.getElementById('dueDate').value,
-                categoryId: document.getElementById('category').value,
-                priority: document.getElementById('priority').value
+                nome: document.getElementById('title').value,
+                descricao: document.getElementById('description').value,
+                prazo: document.getElementById('dueDate').value,
+                prioridade: document.getElementById('priority').value
             };
 
             try {
@@ -108,28 +100,6 @@
                 alert('Erro ao criar tarefa');
             }
         });
-
-        async function loadCategories() {
-            try {
-                const response = await fetch('/api/categories');
-                
-                if (response.ok) {
-                    const categories = await response.json();
-                    const select = document.getElementById('category');
-                    
-                    categories.forEach(category => {
-                        const option = document.createElement('option');
-                        option.value = category.id;
-                        option.textContent = category.name;
-                        select.appendChild(option);
-                    });
-                }
-            } catch (error) {
-                console.error('Erro ao carregar categorias:', error);
-            }
-        }
-
-        loadCategories();
     </script>
 </body>
 </html>
