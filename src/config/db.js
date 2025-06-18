@@ -1,15 +1,32 @@
 const { Pool } = require('pg');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
-const isSSL = process.env.DB_SSL === 'true';
+// Verifica se as variáveis de ambiente estão definidas
+if (!process.env.DATABASE_URL) {
+    console.error('Erro: DATABASE_URL não está definida no arquivo .env');
+    process.exit(1);
+}
 
 const pool = new Pool({
-  user: process.env.DB_USER || 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'task_manager',
-  password: process.env.DB_PASSWORD || 'postgres',
-  port: process.env.DB_PORT || 5432,
-  ssl: isSSL ? { rejectUnauthorized: false } : false,
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    },
+    max: 20, // número máximo de clientes no pool
+    idleTimeoutMillis: 30000, // tempo máximo que um cliente pode ficar inativo
+    connectionTimeoutMillis: 2000, // tempo máximo para estabelecer conexão
+});
+
+// Teste de conexão
+pool.connect((err, client, release) => {
+    if (err) {
+        console.error('Erro ao conectar ao banco de dados:', err.stack);
+        console.error('String de conexão:', process.env.DATABASE_URL);
+    } else {
+        console.log('Conexão com o banco de dados estabelecida com sucesso!');
+        release();
+    }
 });
 
 module.exports = pool;

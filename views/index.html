@@ -1,43 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <title>Gerenciador de Tarefas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(120deg, #f0f4f9 0%, #e0e7ef 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .container {
+            background: #fff;
+            padding: 32px 28px 24px 28px;
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
         }
         h1 {
-            text-align: center;
-            margin-bottom: 20px;
+            color: #2d3a4b;
+            margin-bottom: 24px;
+            font-size: 2rem;
+            letter-spacing: 1px;
         }
         .button-container {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 20px;
         }
         .button {
-            padding: 10px 20px;
-            text-decoration: none;
-            color: white;
-            background-color: #007bff;
-            border-radius: 5px;
+            width: 100%;
+            padding: 12px 0;
+            color: #fff;
+            background: linear-gradient(90deg, #4f8cff 0%, #2355d6 100%);
             border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(79,140,255,0.08);
+            text-decoration: none;
+        }
+        .button:hover {
+            background: linear-gradient(90deg, #2355d6 0%, #4f8cff 100%);
         }
         .button.secondary {
-            background-color: #6c757d;
+            background: #e0e7ef;
+            color: #2355d6;
+        }
+        .button.secondary:hover {
+            background: #c9d6e6;
+            color: #1a3a7c;
+        }
+        @media (max-width: 500px) {
+            .container {
+                padding: 18px 8px 12px 8px;
+                border-radius: 8px;
+            }
+            h1 {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Gerenciador de Tarefas</h1>
-    <div class="button-container">
-        <a href="/tasks/new" class="button">Nova Tarefa</a>
-        <a href="/tasks/completed" class="button secondary">Tarefas Concluídas</a>
+    <div class="container">
+        <h1>Gerenciador de Tarefas</h1>
+        <div class="button-container">
+            <a href="/tasks/new" class="button">Nova Tarefa</a>
+            <a href="/tasks/completed" class="button secondary">Tarefas Concluídas</a>
+        </div>
     </div>
 </body>
 </html>

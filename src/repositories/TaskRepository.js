@@ -1,66 +1,73 @@
 // repositories/TaskRepository.js
-const pool = require("../db"); // Importa o pool de conexão configurado
+const pool = require("../config/db");
 
 class TaskRepository {
-    async createTask({ nome, descricao }) {
-        const query = "INSERT INTO tasks (nome, descricao) VALUES ($1, $2) RETURNING *";
-        const values = [nome, descricao];
+    async createTask({ nome, descricao, status, user_id, category_id, prazo }) {
+        const query = `
+            INSERT INTO tasks (nome, descricao, status, user_id, category_id, prazo) 
+            VALUES ($1, $2, $3, $4, $5, $6) 
+            RETURNING *`;
+        const values = [nome, descricao, status, user_id, category_id, prazo];
         const result = await pool.query(query, values);
         return result.rows[0];
     }
 
-    async getAllTasks() {
-        const query = "SELECT * FROM tasks ORDER BY created_at DESC"; // Ordenar por criação, por exemplo
-        const result = await pool.query(query);
+    async getAllTasksByUser(user_id) {
+        const query = `
+            SELECT t.*, c.nome as categoria_nome, c.cor as categoria_cor 
+            FROM tasks t 
+            LEFT JOIN categories c ON t.category_id = c.id 
+            WHERE t.user_id = $1 
+            ORDER BY t.created_at DESC`;
+        const result = await pool.query(query, [user_id]);
         return result.rows;
     }
 
-    async getTaskById(id) {
-        const query = "SELECT * FROM tasks WHERE id = $1";
-        const values = [id];
-        const result = await pool.query(query, values);
-        return result.rows[0]; // Retorna a tarefa ou undefined se não encontrada
+    async getTaskByIdAndUser(id, user_id) {
+        const query = `
+            SELECT t.*, c.nome as categoria_nome, c.cor as categoria_cor 
+            FROM tasks t 
+            LEFT JOIN categories c ON t.category_id = c.id 
+            WHERE t.id = $1 AND t.user_id = $2`;
+        const result = await pool.query(query, [id, user_id]);
+        return result.rows[0];
     }
 
-    async updateTask(id, { nome, descricao, status }) {
-        // Constrói a query dinamicamente para atualizar apenas os campos fornecidos
-        const fields = [];
-        const values = [];
-        let paramIndex = 1;
-
-        if (nome !== undefined) {
-            fields.push(`nome = $${paramIndex++}`);
-            values.push(nome);
-        }
-        if (descricao !== undefined) {
-            fields.push(`descricao = $${paramIndex++}`);
-            values.push(descricao);
-        }
-        if (status !== undefined) {
-            fields.push(`status = $${paramIndex++}`);
-            values.push(status);
-        }
-
-        if (fields.length === 0) {
-            // Se nenhum campo foi fornecido, retorna a tarefa existente sem atualizar
-            return this.getTaskById(id);
-        }
-
-        fields.push(`updated_at = CURRENT_TIMESTAMP`);
-
-        const query = `UPDATE tasks SET ${fields.join(", ")} WHERE id = $${paramIndex++} RETURNING *`;
-        values.push(id);
-
+    async updateTask(id, { nome, descricao, status, category_id, user_id, prazo }) {
+        const query = `
+            UPDATE tasks 
+            SET nome = COALESCE($1, nome), 
+                descricao = COALESCE($2, descricao), 
+                status = COALESCE($3, status),
+                category_id = COALESCE($4, category_id),
+                prazo = COALESCE($5, prazo),
+                updated_at = NOW() 
+            WHERE id = $6 AND user_id = $7 
+            RETURNING *`;
+        const values = [nome, descricao, status, category_id, prazo, id, user_id];
         const result = await pool.query(query, values);
         return result.rows[0];
     }
 
-    async deleteTask(id) {
-        const query = "DELETE FROM tasks WHERE id = $1 RETURNING *";
-        const values = [id];
-        const result = await pool.query(query, values);
-        return result.rows[0]; // Retorna a tarefa deletada ou undefined se não encontrada
+    async deleteTask(id, user_id) {
+        const query = `
+            DELETE FROM tasks 
+            WHERE id = $1 AND user_id = $2 
+            RETURNING *`;
+        const result = await pool.query(query, [id, user_id]);
+        return result.rows[0];
+    }
+
+    async getCompletedTasks(user_id) {
+        const query = `
+            SELECT t.*, c.nome as categoria_nome, c.cor as categoria_cor 
+            FROM tasks t 
+            LEFT JOIN categories c ON t.category_id = c.id 
+            WHERE t.user_id = $1 AND t.status = 'concluida'
+            ORDER BY t.updated_at DESC`;
+        const result = await pool.query(query, [user_id]);
+        return result.rows;
     }
 }
 
-module.exports = new TaskRepository();
+module.exports = TaskRepository;

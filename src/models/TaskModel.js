@@ -18,7 +18,16 @@ const createTaskSchema = Joi.object({
         'number.base': 'O ID da categoria deve ser um número.',
         'number.integer': 'O ID da categoria deve ser um número inteiro.',
         'number.positive': 'O ID da categoria deve ser um número positivo.'
-    })
+    }),
+    prazo: Joi.date().iso().allow('').optional().messages({
+        'date.base': 'O prazo deve ser uma data válida.',
+        'date.format': 'O prazo deve estar no formato ISO (YYYY-MM-DD).'
+    }),
+    prioridade: Joi.string().valid('baixa', 'media', 'alta').default('media').optional().messages({
+        'string.base': 'A prioridade deve ser um texto.',
+        'any.only': 'A prioridade deve ser baixa, media ou alta.'
+    }),
+    user_id: Joi.string().optional(),
 });
 
 // Define o schema de validação para a atualização de uma tarefa
@@ -38,6 +47,14 @@ const updateTaskSchema = Joi.object({
         'number.base': 'O ID da categoria deve ser um número.',
         'number.integer': 'O ID da categoria deve ser um número inteiro.',
         'number.positive': 'O ID da categoria deve ser um número positivo.'
+    }),
+    prazo: Joi.date().iso().allow('').optional().messages({
+        'date.base': 'O prazo deve ser uma data válida.',
+        'date.format': 'O prazo deve estar no formato ISO (YYYY-MM-DD).'
+    }),
+    prioridade: Joi.string().valid('baixa', 'media', 'alta').optional().messages({
+        'string.base': 'A prioridade deve ser um texto.',
+        'any.only': 'A prioridade deve ser baixa, media ou alta.'
     })
 }).min(1).messages({ // Garante que pelo menos um campo seja enviado para atualização
     'object.min': 'Pelo menos um campo deve ser fornecido para atualização.'

@@ -1,9 +1,33 @@
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();
+
+// Verifica se o arquivo .env existe
+if (!fs.existsSync(path.join(__dirname, '.env'))) {
+    console.error('❌ Erro: Arquivo .env não encontrado!');
+    console.error('Por favor, crie um arquivo .env na raiz do projeto com a string de conexão do Supabase.');
+    process.exit(1);
+}
+
+// Verifica se a string de conexão está definida
+if (!process.env.DATABASE_URL) {
+    console.error('❌ Erro: DATABASE_URL não está definida no arquivo .env!');
+    console.error('Por favor, adicione a string de conexão do Supabase no arquivo .env.');
+    process.exit(1);
+}
+
 const db = require('./src/config/db');
 
 // Ordena os arquivos por nome (timestamp)
 const migrationsDir = path.join(__dirname, 'src/migrations');
+
+// Verifica se o diretório de migrações existe
+if (!fs.existsSync(migrationsDir)) {
+    console.error('❌ Erro: Diretório de migrações não encontrado!');
+    console.error(`O diretório ${migrationsDir} não existe.`);
+    process.exit(1);
+}
+
 const files = fs.readdirSync(migrationsDir).sort();
 
 (async () => {
@@ -12,29 +36,6 @@ const files = fs.readdirSync(migrationsDir).sort();
     console.log('🔍 Verificando conexão com o banco de dados...');
     await db.query('SELECT NOW()');
     console.log('✅ Conexão com o banco de dados estabelecida com sucesso!');
-
-    // Verifica se o banco de dados existe
-    console.log('🔍 Verificando se o banco de dados existe...');
-    const dbExists = await db.query(
-      "SELECT 1 FROM pg_database WHERE datname = $1",
-      [process.env.DB_NAME || 'task_manager']
-    );
-    
-    if (dbExists.rows.length === 0) {
-      console.log('⚠️ Banco de dados não encontrado. Criando...');
-      // Conecta ao banco postgres para criar o novo banco
-      const tempPool = new db.Pool({
-        user: process.env.DB_USER || 'postgres',
-        host: process.env.DB_HOST || 'localhost',
-        database: 'postgres',
-        password: process.env.DB_PASSWORD || 'postgres',
-        port: process.env.DB_PORT || 5432,
-      });
-      
-      await tempPool.query(`CREATE DATABASE ${process.env.DB_NAME || 'task_manager'}`);
-      await tempPool.end();
-      console.log('✅ Banco de dados criado com sucesso!');
-    }
 
     // Executa as migrações
     for (const file of files) {

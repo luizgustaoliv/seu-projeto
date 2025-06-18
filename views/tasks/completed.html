@@ -6,69 +6,103 @@
     <title>Tarefas Concluídas</title>
     <style>
         body {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(120deg, #f0f4f9 0%, #e0e7ef 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .container {
+            background: #fff;
+            padding: 32px 28px 24px 28px;
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+            max-width: 520px;
+            width: 100%;
         }
         h1 {
             text-align: center;
-            margin-bottom: 20px;
+            color: #2d3a4b;
+            margin-bottom: 24px;
+            font-size: 2rem;
+            letter-spacing: 1px;
         }
         .task-list {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
         .task-item {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            padding: 15px;
-            margin-bottom: 10px;
+            background-color: #f8fafc;
+            border: 1.5px solid #e0e7ef;
+            border-radius: 8px;
+            padding: 18px 16px 12px 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(79,140,255,0.04);
         }
         .task-title {
-            font-size: 1.2em;
+            font-size: 1.1em;
             font-weight: bold;
-            margin-bottom: 5px;
+            color: #2355d6;
+            margin-bottom: 6px;
         }
         .task-description {
             color: #6c757d;
             margin-bottom: 10px;
         }
         .task-meta {
-            font-size: 0.9em;
-            color: #6c757d;
+            font-size: 0.95em;
+            color: #3a4a5d;
         }
         .button {
             display: inline-block;
-            padding: 10px 20px;
+            width: 100%;
+            padding: 12px 0;
             text-decoration: none;
-            color: white;
-            background-color: #007bff;
-            border-radius: 5px;
+            color: #fff;
+            background: linear-gradient(90deg, #4f8cff 0%, #2355d6 100%);
+            border-radius: 6px;
             border: none;
             cursor: pointer;
             margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px rgba(79,140,255,0.08);
         }
         .button.secondary {
-            background-color: #6c757d;
+            background: #e0e7ef;
+            color: #2355d6;
+        }
+        .button.secondary:hover {
+            background: #c9d6e6;
+            color: #1a3a7c;
         }
         .no-tasks {
             text-align: center;
             color: #6c757d;
             margin-top: 20px;
         }
+        @media (max-width: 600px) {
+            .container {
+                padding: 18px 8px 12px 8px;
+                border-radius: 8px;
+            }
+            h1 {
+                font-size: 1.3rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Tarefas Concluídas</h1>
-    <div id="taskList" class="task-list">
-        <!-- As tarefas serão inseridas aqui via JavaScript -->
+    <div class="container">
+        <h1>Tarefas Concluídas</h1>
+        <div id="taskList" class="task-list">
+            <!-- As tarefas serão inseridas aqui via JavaScript -->
+        </div>
+        <a href="/" class="button secondary">Voltar ao Início</a>
     </div>
-    <div style="text-align: center;">
-        <a href="/" class="button">Voltar ao Início</a>
-    </div>
-
     <script>
         async function loadCompletedTasks() {
             try {
@@ -76,19 +110,17 @@
                 if (response.ok) {
                     const tasks = await response.json();
                     const taskList = document.getElementById('taskList');
-                    
                     if (tasks.length === 0) {
                         taskList.innerHTML = '<div class="no-tasks">Nenhuma tarefa concluída encontrada.</div>';
                         return;
                     }
-
                     taskList.innerHTML = tasks.map(task => `
                         <div class="task-item">
-                            <div class="task-title">${task.title}</div>
-                            <div class="task-description">${task.description || ''}</div>
+                            <div class="task-title">${task.nome}</div>
+                            <div class="task-description">${task.descricao || ''}</div>
                             <div class="task-meta">
-                                <strong>Categoria:</strong> ${task.category?.name || 'Sem categoria'} |
-                                <strong>Concluída em:</strong> ${new Date(task.completedAt).toLocaleDateString()}
+                                <strong>Categoria:</strong> ${task.categoria_nome || 'Sem categoria'}<br>
+                                <strong>Concluída em:</strong> ${task.updated_at ? new Date(task.updated_at).toLocaleDateString() : '-'}
                             </div>
                         </div>
                     `).join('');
@@ -101,8 +133,6 @@
                     '<div class="no-tasks">Erro ao carregar tarefas. Por favor, tente novamente.</div>';
             }
         }
-
-        // Carregar tarefas quando a página for carregada
         document.addEventListener('DOMContentLoaded', loadCompletedTasks);
     </script>
 </body>

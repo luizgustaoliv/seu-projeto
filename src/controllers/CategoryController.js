@@ -1,10 +1,12 @@
 // controllers/CategoryController.js
 const db = require('../config/db');
 const { createCategorySchema, updateCategorySchema } = require('../models/CategoryModel');
+const Joi = require('joi');
 
 class CategoryController {
     async create(req, res) {
         try {
+            console.log('BODY RECEBIDO:', req.body);
             const { error } = createCategorySchema.validate(req.body);
             if (error) {
                 return res.status(400).json({ error: error.details[0].message });
