@@ -114,3 +114,7 @@ SEU-PROJETO/
 
 6.  **Testar a Aplicação:**
     Abra seu navegador ou uma ferramenta como o Postman/Insomnia e acesse a rota principal (geralmente `http://localhost:3000/`) . Se a conexão com o banco estiver funcionando, você deverá ver uma mensagem de confirmação (o `server.js` do tutorial inicial exibe a hora atual do banco).
+
+7. **Vídeo demonstrativo:**
+https://drive.google.com/file/d/1VHzn3WOkj50KUfD9gZ0KDrABfCIn2fWb/view?usp=sharing
+
